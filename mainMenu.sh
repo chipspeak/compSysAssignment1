@@ -1,18 +1,21 @@
 #!/bin/bash
 
-##===========================================
+##========================================================================
 ##Author: Patrick O'Connor
 ##Student number: 20040412
 ##github: https://github.com/chipspeak
-##Description: main menu script for programme
-##===========================================
+##Description: Script main menu
+##========================================================================
 
-###variable purely for aesthetic adjustments.
-spacing=" \n==============================================================================\n"
+spacing() {
+        echo " "
+        printf "%*s" $(tput cols) | tr " " "=\n"
+        echo " "
+}
 
 ##PS3 variable contains numbers to account for clear and to prevent user from needing to scroll up should they forget their options
 PS3='Choose whether you wish to 1) Add a record, 2) Remove a record, 3) Search records, 4) Generate a report or 5) quit: '
-echo -e $spacing
+spacing
 options=("Add a new record" "Remove a record" "Search records" "Generate a report" "Quit")
 select opt in "${options[@]}"
 do
@@ -21,7 +24,7 @@ do
             ./addRecords.sh
             ;;
         "Remove a record")
-            ./findExpenses.sh
+            ./remove.sh
             ;;
         "Search records")
             ./search.sh
@@ -30,16 +33,16 @@ do
         ##
             ;;
         "Quit")
-            echo -e $spacing
+            spacing
             echo "Exiting programme..."
-            echo -e $spacing
+            spacing
             sleep 1
             clear
             break
             ;;
-        *)  echo -e $spacing
+        *)  spacing
             echo "invalid option, please select one of the numeric options"
-            echo -e $spacing
+            spacing
             ;;
     esac
 done

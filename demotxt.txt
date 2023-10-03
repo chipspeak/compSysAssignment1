@@ -1,0 +1,7 @@
+300 Frank Manager Sales €5000
+400 Caroline Developer Technology €5500
+100 Mary Sysadmin Technology €7000
+200 Rosanne Manager Marketing €9500
+500 Eamonn DBA Technology €6000
+600 Colm Sysadmin Technology €4500
+999 Catherine Dev Tech €4500
