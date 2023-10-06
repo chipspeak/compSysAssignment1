@@ -1,11 +1,11 @@
 #!/bin/bash
 
-##========================================================================
+##===========================================
 ##Author: Patrick O'Connor
 ##Student number: 20040412
 ##github: https://github.com/chipspeak
-##Description: Script main menu
-##========================================================================
+##Description: main menu script for programme
+##===========================================
 
 spacing() {
         echo " "
