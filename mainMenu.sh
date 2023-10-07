@@ -14,9 +14,8 @@ spacing() {
 }
 
 ##PS3 variable contains numbers to account for clear and to prevent user from needing to scroll up should they forget their options
-PS3='Choose whether you wish to 1) Add a record, 2) Remove a record, 3) Search records, 4) Generate a report or 5) quit: '
-spacing
-options=("Add a new record" "Remove a record" "Search records" "Generate a report" "Quit")
+PS3='Choose whether you wish to 1) Add a record, 2) Remove a record, 3) Search records, 4) Check records or 5) quit: '
+options=("Add a new record" "Remove a record" "Search records" "Check records" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -29,8 +28,8 @@ do
         "Search records")
             ./search.sh
             ;;
-        "Generate a report")
-        ##
+        "Check records")
+            ./checkRecords.sh
             ;;
         "Quit")
             spacing
