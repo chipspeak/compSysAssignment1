@@ -7,36 +7,45 @@
 ##Description: script to filter through txt file and find record by detail
 ##========================================================================
 
-##variable purely for aesthetic adjustments.
-
+##function using tput command in addition to columns to substitude equals sign into character width of screen
 spacing() {
         echo " "
         printf "%*s" $(tput cols) | tr " " "=\n"
         echo " "
 }
 
+loading() {
+    spacing
+    echo "Loading..."
+    spacing
+    sleep 1
+    clear
+}
+
+exit_menu() {
+    spacing
+    echo "returning to the previous menu"
+    spacing
+    sleep 1
+    clear
+    exit
+}
+
 ##variable to be set to true for use in a do while loop
 subMenu=true
-spacing
-echo "Loading..."
-spacing
-sleep 1
-clear
+loading
 ##loop is set
-while $subMenu; do
+while $subMenu; 
+do
     ##user is prompted to enter the name of choice or r to return. This is then stored in the name variable.
     read -p "Please enter the word or number you wish to search for or enter 'R' to return: " input
-    while [ "$input" = "" ] ; do
+    while [ "$input" = "" ] ; 
+    do
         echo "Invalid entry. This field cannot be left blank. "
         read -p "Please enter the word or number you wish to search for or enter 'R' to return: " input
     done
     if [ $input = "r" ] || [ $input = "R" ] ; then
-        spacing
-        echo "Returning to the previous menu..."
-        spacing
-        sleep 1
-        clear
-        break
+        exit_menu
     fi
     ## expenses variable uses grep -i -w to check for the name in the txt file case-insensitive
     ## seeking a whole word before piping into awk to print the expenses column

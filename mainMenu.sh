@@ -7,6 +7,7 @@
 ##Description: main menu script for programme
 ##===========================================
 
+##function using tput command in addition to columns to substitude equals sign into character width of screen
 spacing() {
         echo " "
         printf "%*s" $(tput cols) | tr " " "=\n"
