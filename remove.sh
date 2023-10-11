@@ -12,6 +12,14 @@ confirmation=false
 ##variable used to store the headings that will be presented with the txt file
 headings="NAME,COMPANY,SPECIALITY,CITY,COUNTY,PHONE,EMAIL"
 
+GREEN=$'\e[32m'
+RED=$'\e[31m'
+YELLOW=$'\e[33m'
+NC=$'\e[0m'
+INVERTED=$'\e[7m'
+UNDERLINED=$'\e[4m'
+BOLD=$'\e[1m'
+
 ##function using tput command in addition to columns to substitude equals sign into character width of screen
 spacing() {
     echo " "
@@ -21,7 +29,7 @@ spacing() {
 
 loading() {
     spacing
-    echo "Loading..."
+    echo -e "${BOLD}Loading...${NC}"
     spacing
     sleep 1
     clear
@@ -32,26 +40,26 @@ yes_or_no() {
 confirmation=false
 while ! $confirmation; 
 do
-    read -p "Do you wish to remove the above information from records (Y/N)? " answer
+    read -p "Do you wish to ${UNDERLINED}remove${NC} the above information from records (${GREEN}Y${NC}/${RED}N${NC})? " answer
     if [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
             sed -i "/$1/d" records.txt
-            echo "Removing the above records..."
+            echo -e "Removing the above record(s)..."
             sleep 1
-            echo "Record removed. "
-            sleep 1
+            echo "${GREEN}Record(s) removed${NC} "
+            sleep 2
             clear
             confirmation=true
     elif [ "$answer" = "N" ] || [ "$answer" = "n" ] ; then
             clear
             confirmation=true
-    else echo "Invalid input. Please answer 'Y' or 'N' "
+    else echo "${YELLOW}Invalid input. Please answer'Y' or 'N'${NC} "
     fi
 done
 }
 
 exit_menu() {
     spacing
-    echo "returning to the previous menu"
+    echo -e "Returning to the previous menu..."
     spacing
     sleep 1
     clear
@@ -69,11 +77,11 @@ do
     sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' records.txt | column -t -s ","
     spacing
     ##user is prompted to enter the details they wish to search for or r to return. This is then stored in the input variable.
-    read -p "Please enter the word or number you wish to search for and remove or enter 'R' to return: " input
+    read -p "Please enter the ${UNDERLINED}email address${NC} of the rep you wish to remove or enter 'R' to return: " input
     ##while loop set to run while input variable has been left blank to prevent empty fields.
     while [ "$input" = "" ] ; 
     do
-        echo "Invalid entry. This field cannot be left blank "
+        echo "${YELLOW}Invalid entry. This field cannot be left blank ${NC}"
         read -p "Please enter the word or number you wish to search for and remove or enter 'R' to return: " input
     done
     ##if statement to account for entry of our return key. Loop is broken if this is true.
@@ -86,7 +94,6 @@ do
 
     ##if statement checks if the variable is true and then uses grep to search for the variable within records.txt before outputting to a new text file.
     if [ "$search" ] ; then
-    ## echos a message to user listing the name and their expenses
         spacing
         grep -i -w -F "$search" records.txt >> searchresult.txt | column -t -s ","
         ##once again the headings variable and sed command are used to present the headings appropriately in new file
@@ -99,7 +106,7 @@ do
     elif [ ! "$search" ] && [ "$input" != "r" ] && [ "$input" != "R" ] ; then
     ## Else if checks for a lack of the variable or r for return and if they're not found, message is echoed to user.
         spacing
-        echo "No results."
+        echo "${YELLOW}No results.${NC}"
         sleep 1
         clear
     fi

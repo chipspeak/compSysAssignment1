@@ -16,3 +16,5 @@ Aisling Connolly,Cadence String,String,Dingle,Kerry,+353612345687,aislingconolly
 Finbar Murphy,Fiddle Fantasia,String,Clonmel,Tipperary,+353898715032,finbar.murphy@fiddlefantasia.ie
 Aoibheann O'Donnell,Carrick Clarinets,Wind,Carrick,Tipperary,+353297134564,aoibheannod@carrickclarinets.ie
 Caoimhe Wallace,Martin,Guitar,Maynooth,Kildare,+353112234677,caoimhe@martin.ie
+John Palmer,JP Music,Guitar,Waterford,Waterford,+353123456789,john@jpmusic.ie
+James O Donovan,JOD Sax,Wind,Clonmel,Tipperary,+353123321456,james@jodsax.ie

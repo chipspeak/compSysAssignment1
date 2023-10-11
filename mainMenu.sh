@@ -7,6 +7,9 @@
 ##Description: main menu script for programme
 ##===========================================
 
+YELLOW=$'\e[33m'
+NC=$'\e[0m'
+
 ##function using tput command in addition to columns to substitude equals sign into character width of screen
 spacing() {
         echo " "
@@ -15,8 +18,8 @@ spacing() {
 }
 
 ##PS3 variable contains numbers to account for clear and to prevent user from needing to scroll up should they forget their options
-PS3='Choose whether you wish to 1) Add a record, 2) Remove a record, 3) Search records, 4) Check records or 5) quit: '
-options=("Add a new record" "Remove a record" "Search records" "Check records" "Quit")
+PS3="Choose whether you wish to 1) Add a record 2) Remove a record 3) Search records 4) quit: "
+options=("Add a new record" "Remove a record" "Search records" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -29,9 +32,6 @@ do
         "Search records")
             ./search.sh
             ;;
-        "Check records")
-            ./checkRecords.sh
-            ;;
         "Quit")
             spacing
             echo "Exiting programme..."
@@ -41,7 +41,7 @@ do
             break
             ;;
         *)  spacing
-            echo "invalid option, please select one of the numeric options"
+            echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
             spacing
             ;;
     esac
