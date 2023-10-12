@@ -17,6 +17,9 @@ check=false
 numRestriction="^[0-9]{9}$"
 letterRestriction="^[a-zA-z]+$"
 
+##variable used to store the regex that will be used to validate email addresses
+emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
+
 counties=("Clare" "Cork" "Kerry" "Limerick" "Tipperary" "Waterford" "Carlow" "Dublin" "Kildare" "Kilkenny" "Laois" "Longford" "Louth" "Meath" "Offaly" "Westmeath" "Wexford" "Wicklow" "Galway" "Leitrim" "Mayo" "Roscommon" "Sligo" "Antrim" "Armagh" "Tyrone" "Derry" "Down" "Donegal" "Fermanagh" "Monaghan" "Cavan")
 
 GREEN=$'\e[32m'
@@ -59,15 +62,16 @@ detail_check() {
         exit_menu
     elif [ "$1" != "" ] && [[ $1 =~ $letterRestriction ]]; then
         question=false
-    else echo "${YELLOW}This field cannot contain numbers or symbols. Please enter only letters${NC}"
+    else echo "${YELLOW}This field cannot contain numbers, symbols or be left blank. Please enter only letters${NC}"
     fi
 }
 
 ##function for use with email field to check that it does not contain no value.
 email_check() {
-    if [ "$1" = "" ] ; then
-        echo "${YELLOW}This field cannot be left blank. "
-    else question=false
+    if [[ $1 =~ $emailRestriction ]]; then
+        return 0 
+    else
+        return 1 
     fi
 }
 
@@ -151,9 +155,9 @@ yes_or_no() {
 
 ##outer menu loop is set
 loading
-spacing
 while $subMenu; 
 do
+    spacing
     ##user is prompted to enter the record details one at a time or r to return. These are then stored in the appropriate variable.
     ##the check functions then have these new variables passed into them for error checking as explained above.
     question=true
@@ -215,7 +219,12 @@ do
     while $question; 
     do
         read -p "Enter the email address of the rep or enter 'R' to return: " email
-        email_check $email
+        if email_check "$email" ; then
+        question=false
+        elif [ "$email" = "r" ] || [ "$email" = "R" ] ; then
+            exit_menu
+        else echo "${YELLOW}Please enter a valid email in the format of example@example.example${NC}"
+        fi
     done
     spacing
     ##user then has their input echoed back to them before being given a prompt before adding it to the txt file

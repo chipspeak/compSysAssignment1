@@ -8,6 +8,8 @@
 ##===========================================
 
 YELLOW=$'\e[33m'
+INVERTED=$'\e[7m'
+BOLD=$'\e[1m'
 NC=$'\e[0m'
 subMenu=true
 
@@ -18,12 +20,23 @@ spacing() {
         echo " "
 }
 
+display_center(){
+    columns="$(tput cols)"
+    while IFS= read -r line; do
+        printf "%*s\n" $(( (${#line} + columns) / 2)) "$line"
+    done < "$1"
+}
+
 ##clear terminal prior to menu loop being set
+display_center records.txt
+sleep 2
 clear
 while [ $subMenu ]
 spacing
+echo "${INVERTED}MAIN MENU${NC}"
+echo ""
 do
-    echo "Please select on of the below options "
+    echo "${BOLD}Please select one of the below options${NC} "
     echo ""
     echo "1) Add a new record"
     echo "2) Remove a record"
@@ -43,7 +56,6 @@ case $answer in
             ;;
         *)  spacing
             echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
-            spacing
             ;;
     esac
 done

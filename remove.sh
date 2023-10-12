@@ -15,6 +15,8 @@ subMenu=true
 choice=false
 ##variable used to store the headings that will be presented with the txt file
 headings="NAME,COMPANY,SPECIALITY,CITY,COUNTY,PHONE,EMAIL"
+##variable used to store the regex that will be used to validate email addresses
+emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
 
 GREEN=$'\e[32m'
 RED=$'\e[31m'
@@ -39,6 +41,21 @@ loading() {
     clear
 }
 
+email_check() {
+    if [[ $1 =~ $emailRestriction ]]; then
+        return 0 
+    else
+        return 1 
+    fi
+}
+
+exit_option() {
+    ##if statement to account for entry of our return key. Loop is broken if this is true.
+    if [ "$1" = "r" ] || [ "$1" = "R" ] ; then
+        exit_menu
+    fi
+}
+
 ##function which uses a while loop to check if the user wants to delete the results of the search
 yes_or_no() {
 confirmation=false
@@ -55,7 +72,7 @@ do
             confirmation=true
     elif [ "$answer" = "N" ] || [ "$answer" = "n" ] ; then
             clear
-            confirmation=true
+            break
     else echo "${YELLOW}Invalid input. Please answer 'Y' or 'N'${NC} "
     fi
 done
@@ -75,36 +92,25 @@ loading
 while $subMenu; 
 do
     spacing
-    ##sed command is used to add the headings variable to the output of the txt file. This is piped into column for formatting via comma delimiter
+    ##sed command is used to add the headings variable to the output of the txt file. This is piped into column for formatting via comma delimiter.
     sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' records.txt | column -t -s ","
     spacing
-    # while [ !$choice ]
-    # do
-    #     echo "Please select whether you wish to delete a single record or multiple"
-    #     echo ""
-    #     echo "1) Delete a single record"
-    #     echo "2) Delete multiple records"
-
     ##user is prompted to enter the details they wish to search for or r to return. This is then stored in the input variable.
     read -p "Please enter the ${UNDERLINED}email address${NC} of the rep you wish to remove or enter 'R' to return: " input
-    ##while loop set to run while input variable has been left blank to prevent empty fields.
-    while [ "$input" = "" ] ; 
+    ##this while loop will account for all eventualities where the input does not match an email. Checked by regex in email_check function.
+    while ! email_check "$input" 
     do
-        echo "${YELLOW}Invalid entry. This field cannot be left blank ${NC}"
-        read -p "Please enter the word or number you wish to search for and remove or enter 'R' to return: " input
+        exit_option "$input"
+        echo "${YELLOW}This email address cannot be found. Please enter an email from the above list. ${NC}"
+        read -p "Please enter the ${UNDERLINED}email address${NC} of the rep you wish to remove or enter 'R' to return: " input
     done
-    ##if statement to account for entry of our return key. Loop is broken if this is true.
-    if [ "$input" = "r" ] || [ "$input" = "R" ] ; then
-        exit_menu
-    fi
-
-    ## search variable uses grep -i -w to check for the name in the txt file case-insensitive and is a whole word.
-    ##emails=$(awk -F ',' '{print $7}' records.txt > emails.txt) 
-    search=$(grep -i -w "$input" records.txt)     
-    ##if statement checks if the variable is true and then uses grep to search for the variable within records.txt before outputting to a new text file.
-    if [ "$search" ] ; then
+    ##if statement checks if the function is returning a true (i.e 0) when using a regex check on the input email and then executes the following commands.
+    if  email_check "$input" ; then
+        # ## search variable uses grep -i -w to check for the name in the txt file case-insensitive and is a whole word.
+        # search=$(grep -i -w "$input" records.txt)  
         spacing
-        grep -i -w -F "$search" records.txt >> searchresult.txt | column -t -s ","
+        ##grep is used to place the result in a new txt file for formatting with headings and columns
+        grep -i -w -F "$input" records.txt >> searchresult.txt | column -t -s ","
         ##once again the headings variable and sed command are used to present the headings appropriately in new file
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
         ##as we've used grep to visually output the contents of the new file, it is subsequently deleted
@@ -112,11 +118,5 @@ do
         spacing
         ##user is then asked if they wish to delete the found records vis the yes or no function
         yes_or_no $input
-    elif [ ! "$search" ] && [ "$input" != "r" ] && [ "$input" != "R" ] ; then
-    ## Else if checks for a lack of the variable or r for return and if they're not found, message is echoed to user.
-        spacing
-        echo "${YELLOW}No results found for this email address. Please try again.${NC}"
-        sleep 2
-        clear
     fi
 done

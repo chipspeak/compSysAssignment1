@@ -157,7 +157,7 @@ county_options() {
 while [ $subMenu ] 
 do
     spacing
-    echo "Please select the province you wish to locate sales reps in "
+    echo "${BOLD}Please select the province you wish to locate sales reps in ${NC}"
     echo ""
     echo "1) Munster"
     echo "2) Leinster"
@@ -199,7 +199,8 @@ do
             clear
             break 
             ;;
-        *) echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
+        *)  spacing
+            echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
     esac
 done
 }
@@ -208,7 +209,7 @@ speciality_options() {
 while [ $subMenu ] 
 do
     spacing
-    echo "Please select the instrumental specialty you wish to search for "
+    echo "${BOLD}Please select the instrumental specialty you wish to search for ${NC}"
     echo ""
     echo "1) Piano"
     echo "2) Guitar"
@@ -258,7 +259,8 @@ do
             clear
             break 
             ;;
-        *) echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
+        *)  spacing
+            echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
     esac
 done
 }
@@ -270,7 +272,9 @@ loading
 while [ $mainMenu ]
 do
     spacing
-    echo "Please select one of the following options"
+    echo "${INVERTED}SEARCH MENU${NC}"
+    echo ""
+    echo "${BOLD}Please select one of the following options${NC}"
     echo ""
     echo "1) Search by word or number"
     echo "2) Search by instrumental speciality"
@@ -304,7 +308,6 @@ do
             ;;
         *)  spacing
             echo "${YELLOW}Invalid option. Please select one of supplied numbers. ${NC}"
-            spacing
             ;;
     esac
 done
