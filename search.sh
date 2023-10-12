@@ -1,14 +1,15 @@
 #!/bin/bash
 
-##========================================================================
+##=================================================================================
 ##Author: Patrick O'Connor
 ##Student number: 20040412
 ##github: https://github.com/chipspeak
-##Description: script to filter through txt file and find record by detail
-##========================================================================
+##Description: script to filter through txt file and find specific details via menu
+##=================================================================================
 
 subMenu=true
 searchMenu=true
+mainMenu=true
 
 provinces=("Munster" "Leinster" "Connacht" "Ulster")
 munster=("Clare" "Cork" "Kerry" "Limerick" "Tipperary" "Waterford")
@@ -65,18 +66,18 @@ view_all_records() {
     repnum=$(sed -n '$=' records.txt)
     spacing
     echo "There are a total of $repnum sales reps currently on record."
-    spacing
 }
 
 search_by_word() {
 ##loop is set
 while $searchMenu; 
 do
+    spacing
     ##user is prompted to enter the name of choice or r to return. This is then stored in the name variable.
     read -p "Please enter the word or number you wish to search for or enter 'R' to return: " input
     while [ "$input" = "" ] ; 
     do
-        echo "Invalid entry. This field cannot be left blank. "
+        echo "${YELLOW}Invalid entry. This field cannot be left blank. ${NC}"
         read -p "Please enter the word or number you wish to search for or enter 'R' to return: " input
     done
     if [ $input = "r" ] || [ $input = "R" ] ; then
@@ -90,22 +91,19 @@ do
     ## expenses variable uses grep -i -w to check for the name in the txt file case-insensitive
     ## seeking a whole word before piping into awk to print the expenses column
     search=$(grep -i -w -F "$input" records.txt)
-
     ##if statement checks if the variable is true i.e the name search returns a true result
     if [ "$search" ] ; then
     ## echos a message to user displaying the returned result
-        spacing
         echo "Returning result(s) for $input..."
         spacing
         sleep 1
         grep -i -w -F "$input" records.txt >> searchresult.txt | column -t -s ","
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
         rm searchresult.txt
-        spacing
     elif [ ! "$search" ] && [ "$input" != "r" ] && [ "$input" != "R" ] ; then
     ## otherwise returns that the name could not be found and the main script returns to the initial 3 options.
         spacing
-        echo "No results."
+        echo "No results found for your search."
     fi
 done
 }
@@ -158,7 +156,9 @@ display_specialist_results() {
 county_options() {
 while [ $subMenu ] 
 do
+    spacing
     echo "Please select the province you wish to locate sales reps in "
+    echo ""
     echo "1) Munster"
     echo "2) Leinster"
     echo "3) Connacht"
@@ -171,25 +171,25 @@ do
             echo "Loading representatives based in Munster..."
             answer_formatting
             display_province_results "${munster[@]}"
-            spacing
+            
             ;;
         2) spacing
             echo "Loading representatives based in Leinster..."
             answer_formatting
             display_province_results "${leinster[@]}"
-            spacing 
+             
             ;;
         3) spacing
             echo "Loading representatives based in Connacht..."
             answer_formatting
             display_province_results "${connacht[@]}"
-            spacing 
+             
             ;;
         4) spacing
             echo "Loading representatives based in Ulster..."
             answer_formatting
             display_province_results "${ulster[@]}"
-            spacing 
+             
             ;;
         5) subMenu=false
             spacing
@@ -207,7 +207,9 @@ done
 speciality_options() {
 while [ $subMenu ] 
 do
+    spacing
     echo "Please select the instrumental specialty you wish to search for "
+    echo ""
     echo "1) Piano"
     echo "2) Guitar"
     echo "3) String"
@@ -222,37 +224,32 @@ do
             echo "Loading reps specialising in Piano..."
             answer_formatting
             display_specialist_results piano
-            spacing
             ;;
         2) spacing
             echo "Loading reps specialising in Guitar..."
             answer_formatting
-            display_specialist_results guitar
-            spacing 
+            display_specialist_results guitar 
             ;;
         3) spacing
             echo "Loading reps specialising in Strings..."
             answer_formatting
             display_specialist_results string
-            spacing
             ;;
         4) spacing
             echo "Loading reps specialising in Wind..."
             answer_formatting
             display_specialist_results wind
-            spacing
             ;;
         5) spacing
             echo "Loading reps specialising in Percussion..."
             answer_formatting
             display_specialist_results percussion
-            spacing
             ;;
         6) spacing
             echo "Loading reps specialising in Brass..."
             answer_formatting
             display_specialist_results brass
-            spacing;;
+            ;;
         7) subMenu=false
             spacing
             echo "Returning to previous menu..."
@@ -268,28 +265,36 @@ done
 
 loading
 ##outer menu for checking records and other options 
-PS3='Choose whether you wish to 1) Search by word or number 2) Search by instrument speciality 3) Search by province 4) View all records 5) Return to the previous menu: '
-options=("Search by word or number" "Search by instrument speciality" "Search by province" "View all records" "Return to the previous menu")
-select opt in "${options[@]}" 
+##PS3='Choose whether you wish to 1) Search by word or number 2) Search by instrument speciality 3) Search by province 4) View all records 5) Return to the previous menu: '
+##options=("Search by word or number" "Search by instrument speciality" "Search by province" "View all records" "Return to the previous menu")
+while [ $mainMenu ]
 do
-    case $opt in
-        "Search by word or number")
-            loading
+    spacing
+    echo "Please select one of the following options"
+    echo ""
+    echo "1) Search by word or number"
+    echo "2) Search by instrumental speciality"
+    echo "3) Search by province"
+    echo "4) View all records"
+    echo "5) Return to the previous menu"
+    read option
+    case $option in  
+        1)  loading
             search_by_word
             ;;
-        "Search by instrument speciality")
+        2)
             loading
             speciality_options
             ;;
-        "Search by province")
+        3)
             loading
             county_options
             ;;
-        "View all records")
+        4)
             loading
             view_all_records
             ;;
-        "Return to the previous menu")
+        5)
             spacing
             echo "Returning to previous menu..."
             spacing

@@ -9,6 +9,7 @@
 
 YELLOW=$'\e[33m'
 NC=$'\e[0m'
+subMenu=true
 
 ##function using tput command in addition to columns to substitude equals sign into character width of screen
 spacing() {
@@ -17,23 +18,23 @@ spacing() {
         echo " "
 }
 
-##PS3 variable contains numbers to account for clear and to prevent user from needing to scroll up should they forget their options
-PS3="Choose whether you wish to 1) Add a record 2) Remove a record 3) Search records 4) quit: "
-options=("Add a new record" "Remove a record" "Search records" "Quit")
-select opt in "${options[@]}"
+##clear terminal prior to menu loop being set
+clear
+while [ $subMenu ]
+spacing
 do
-    case $opt in
-        "Add a new record")
-            ./addRecords.sh
-            ;;
-        "Remove a record")
-            ./remove.sh
-            ;;
-        "Search records")
-            ./search.sh
-            ;;
-        "Quit")
-            spacing
+    echo "Please select on of the below options "
+    echo ""
+    echo "1) Add a new record"
+    echo "2) Remove a record"
+    echo "3) Search Records"
+    echo "4) Exit"
+    read answer
+case $answer in 
+        1) ./addRecords.sh ;;
+        2) ./remove.sh ;;
+        3) ./search.sh ;;
+        4)  spacing
             echo "Exiting programme..."
             spacing
             sleep 1

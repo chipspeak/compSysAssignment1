@@ -151,6 +151,7 @@ yes_or_no() {
 
 ##outer menu loop is set
 loading
+spacing
 while $subMenu; 
 do
     ##user is prompted to enter the record details one at a time or r to return. These are then stored in the appropriate variable.

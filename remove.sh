@@ -9,6 +9,10 @@
 
 ##variable used in the yes or no method loop
 confirmation=false
+##variable to be set to true for use in the outer loop of this script
+subMenu=true
+##variable set to false for use in menu choice
+choice=false
 ##variable used to store the headings that will be presented with the txt file
 headings="NAME,COMPANY,SPECIALITY,CITY,COUNTY,PHONE,EMAIL"
 
@@ -52,7 +56,7 @@ do
     elif [ "$answer" = "N" ] || [ "$answer" = "n" ] ; then
             clear
             confirmation=true
-    else echo "${YELLOW}Invalid input. Please answer'Y' or 'N'${NC} "
+    else echo "${YELLOW}Invalid input. Please answer 'Y' or 'N'${NC} "
     fi
 done
 }
@@ -66,16 +70,21 @@ exit_menu() {
     exit
 }
 
-##variable to be set to true for use in the outer loop of this script
-subMenu=true
 loading
 ##the outer loop in which the bulk of this scripts actions are contained
 while $subMenu; 
 do
     spacing
-    ##sed command is used to add the headings variable to the output of the txt file. This is piped into colum for formatting via comma delimiter
+    ##sed command is used to add the headings variable to the output of the txt file. This is piped into column for formatting via comma delimiter
     sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' records.txt | column -t -s ","
     spacing
+    # while [ !$choice ]
+    # do
+    #     echo "Please select whether you wish to delete a single record or multiple"
+    #     echo ""
+    #     echo "1) Delete a single record"
+    #     echo "2) Delete multiple records"
+
     ##user is prompted to enter the details they wish to search for or r to return. This is then stored in the input variable.
     read -p "Please enter the ${UNDERLINED}email address${NC} of the rep you wish to remove or enter 'R' to return: " input
     ##while loop set to run while input variable has been left blank to prevent empty fields.
@@ -90,8 +99,8 @@ do
     fi
 
     ## search variable uses grep -i -w to check for the name in the txt file case-insensitive and is a whole word.
-    search=$(grep -i -w -F "$input" records.txt)
-
+    ##emails=$(awk -F ',' '{print $7}' records.txt > emails.txt) 
+    search=$(grep -i -w "$input" records.txt)     
     ##if statement checks if the variable is true and then uses grep to search for the variable within records.txt before outputting to a new text file.
     if [ "$search" ] ; then
         spacing
@@ -106,8 +115,8 @@ do
     elif [ ! "$search" ] && [ "$input" != "r" ] && [ "$input" != "R" ] ; then
     ## Else if checks for a lack of the variable or r for return and if they're not found, message is echoed to user.
         spacing
-        echo "${YELLOW}No results.${NC}"
-        sleep 1
+        echo "${YELLOW}No results found for this email address. Please try again.${NC}"
+        sleep 2
         clear
     fi
 done
