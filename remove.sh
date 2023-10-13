@@ -18,9 +18,11 @@ headings="NAME,COMPANY,SPECIALITY,CITY,COUNTY,PHONE,EMAIL"
 ##variable used to store the regex that will be used to validate email addresses
 emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
 
+##colour and text formatting variables
 GREEN=$'\e[32m'
 RED=$'\e[31m'
 YELLOW=$'\e[33m'
+CYAN=$'\e[96m'
 NC=$'\e[0m'
 INVERTED=$'\e[7m'
 UNDERLINED=$'\e[4m'
@@ -33,22 +35,27 @@ spacing() {
     echo " "
 }
 
+##function for use in breaking up user experience via brief load and clear.
 loading() {
     spacing
-    echo -e "${BOLD}Loading...${NC}"
+    echo -e "${BOLD}${CYAN}Loading...${NC}"
     spacing
     sleep 1
     clear
 }
 
+##function which uses regex to check if the email passed in matches the appropriate format before returning a success or failure binary
 email_check() {
-    if [[ $1 =~ $emailRestriction ]]; then
+    emailSearch=$(grep -i -w -F "$1" records.txt)
+    if [[ $1 =~ $emailRestriction ]] && [ "$emailSearch" ] ; then
         return 0 
     else
         return 1 
     fi
 }
 
+##function for use in allowing the user to return to the previous menu
+##checks if the passed argument is an R and calls the exit_menu function if that is the case.
 exit_option() {
     ##if statement to account for entry of our return key. Loop is broken if this is true.
     if [ "$1" = "r" ] || [ "$1" = "R" ] ; then
@@ -56,12 +63,17 @@ exit_option() {
     fi
 }
 
-##function which uses a while loop to check if the user wants to delete the results of the search
+##function which uses a while loop to check if the user wants to delete the results of the search.
 yes_or_no() {
 confirmation=false
+##while the confirmation variable is false (which it is by default) which prompts the user a y or n option.
+##this option, if affirmed, uses the passed argument and sed to delete the search result from the txt file.
+##a success message is echoed to the user and then the loop is broken when confirmation is declared true
+##otherwise, is the user chooses n, the screen is cleared and the loop is broken. 
+##error checking is also in place to ensure that all answers that are not y or n return an error message.
 while ! $confirmation; 
 do
-    read -p "Do you wish to ${UNDERLINED}remove${NC} the above information from records (${GREEN}Y${NC}/${RED}N${NC})? " answer
+    read -p "Do you wish to ${UNDERLINED}remove${NC} the above information from records (${GREEN}${BOLD}Y${NC}/${RED}${BOLD}N${NC})? " answer
     if [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
             sed -i "/$1/d" records.txt
             echo -e "Removing the above record(s)..."
@@ -78,9 +90,10 @@ do
 done
 }
 
+##function to display a returning message to user, clear the screen and then exit this subscript.
 exit_menu() {
     spacing
-    echo -e "Returning to the previous menu..."
+    echo "${BOLD}${CYAN}Returning to the previous menu...${NC}"
     spacing
     sleep 1
     clear
@@ -92,6 +105,8 @@ loading
 while $subMenu; 
 do
     spacing
+    echo "${INVERTED}${CYAN}R E M O V E - A - R E C O R D${NC}"
+    echo ""
     ##sed command is used to add the headings variable to the output of the txt file. This is piped into column for formatting via comma delimiter.
     sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' records.txt | column -t -s ","
     spacing
@@ -106,8 +121,6 @@ do
     done
     ##if statement checks if the function is returning a true (i.e 0) when using a regex check on the input email and then executes the following commands.
     if  email_check "$input" ; then
-        # ## search variable uses grep -i -w to check for the name in the txt file case-insensitive and is a whole word.
-        # search=$(grep -i -w "$input" records.txt)  
         spacing
         ##grep is used to place the result in a new txt file for formatting with headings and columns
         grep -i -w -F "$input" records.txt >> searchresult.txt | column -t -s ","

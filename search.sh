@@ -7,20 +7,23 @@
 ##Description: script to filter through txt file and find specific details via menu
 ##=================================================================================
 
+##variables for use within menu loops
 subMenu=true
 searchMenu=true
 mainMenu=true
 
+##arrays for use in the search menus
 provinces=("Munster" "Leinster" "Connacht" "Ulster")
 munster=("Clare" "Cork" "Kerry" "Limerick" "Tipperary" "Waterford")
 leinster=("Carlow" "Dublin" "Kildare" "Kilkenny" "Laois" "Longford" "Louth" "Meath" "Offaly" "Westmeath" "Wexford" "Wicklow")
 connacht=("Galway" "Leitrim" "Mayo" "Roscommon" "Sligo")
 ulster=("Antrim" "Armagh" "Tyrone" "Derry" "Down" "Donegal" "Fermanagh" "Monaghan" "Cavan")
-instruments=("Piano" "Guitar" "String" "Percussion" "Wind" "Brass")
 
+##variables for use in colour and text formatting
 GREEN=$'\e[32m'
 RED=$'\e[31m'
 YELLOW=$'\e[33m'
+CYAN=$'\e[96m'
 NC=$'\e[0m'
 INVERTED=$'\e[7m'
 UNDERLINED=$'\e[4m'
@@ -36,7 +39,7 @@ spacing() {
 ##function for use in breaking up user experience via brief load and clear.
 loading() {
     spacing
-    echo "Loading..."
+    echo "${BOLD}${CYAN}Loading...${NC}"
     spacing
     sleep 1
     clear
@@ -45,13 +48,14 @@ loading() {
 ##function to echo a message to user notifying them of menu change prior to clear and return.
 exit_menu() {
     spacing
-    echo "returning to the previous menu"
+    echo "${BOLD}${CYAN}returning to the previous menu${NC}"
     spacing
     sleep 1
     clear
     exit
 }
 
+##function for use in formatting the submenu results.
 answer_formatting() {
     spacing
     sleep 1
@@ -59,9 +63,12 @@ answer_formatting() {
     spacing
 }
 
+##the simples of the functions, this yields a full display of the current record to the user via sed.
+##user is also supplied with a total number of reps via variable created using -n to suppress sed output
+##and $= to check the final line of the file, thus providing the total number.
 view_all_records() {
     spacing
-    ##sed command is used to add the headings variable to the output of the txt file. This is piped into colum for formatting via comma delimiter
+    ##sed command is used to add the headings to the output of the txt file. This is piped into colum for formatting via comma delimiter
     sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' records.txt | column -t -s ","
     repnum=$(sed -n '$=' records.txt)
     spacing
@@ -82,74 +89,74 @@ do
     done
     if [ $input = "r" ] || [ $input = "R" ] ; then
         spacing
-        echo "Returning to previous menu..."
+        echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
         spacing
         sleep 1
         clear
         break
     fi
-    ## expenses variable uses grep -i -w to check for the name in the txt file case-insensitive
-    ## seeking a whole word before piping into awk to print the expenses column
+    ## search variable uses grep -i -w to check for the name in the txt file case-insensitive
     search=$(grep -i -w -F "$input" records.txt)
     ##if statement checks if the variable is true i.e the name search returns a true result
     if [ "$search" ] ; then
-    ## echos a message to user displaying the returned result
-        echo "Returning result(s) for $input..."
+    ## echos a loading message to the user.
+        echo "${BOLD}${GREEN}Returning result(s) for $input...${NC}"
         spacing
         sleep 1
+        ##the result of the search is placed into a new text file and then piped into the column command for formatting
         grep -i -w -F "$input" records.txt >> searchresult.txt | column -t -s ","
+        ##sed command is used to add the headings to the output of the txt file. This is piped into colum for formatting via comma delimiter
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
+        ##the newly created file is then deleted.
         rm searchresult.txt
     elif [ ! "$search" ] && [ "$input" != "r" ] && [ "$input" != "R" ] ; then
     ## otherwise returns that the name could not be found and the main script returns to the initial 3 options.
         spacing
-        echo "No results found for your search."
+        echo "${BOLD}${RED}No results found for your search.${NC}"
     fi
 done
 }
 
 ##function that will be called upon choice of a specific province.
 display_province_results() {
-    ##The array of counties in the province is passed into the function before being iterated through via for loop
-    ##this array then uses grep command to search the records file for whole words, case insensensitive matches
+    ##The elements of the province array are passed into the function before being iterated through via for loop
+    ##this array then uses the grep command to search the records file for whole-words, case insensensitive matches
     ##The array-matched results are then placed inside a new text file.
-        for i in "$@"
-        do
-            grep -i -w -F "$i" records.txt >> province.txt
-        done
-        ##this if statement checks if the txt file contains data and if so, uses sed to add headings before outputting to user
-        ##additionally, sed is used to check for the number of entries for the province in question.
-        if [ -s province.txt ] ; then
-            sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' province.txt | column -t -s ","
-            repnum=$(sed -n '$=' province.txt)
-            spacing
-            echo "There are a total of $repnum sales representatives in this province "
-            rm province.txt
-        ##otherwise (meaning the txt file has no data) user is informed that there are no reps in this area.
-        else
-            echo "There are currently no sales reps operating in this province on record "
-        fi
+    for i in "$@"
+    do
+        grep -i -w -F "$i" records.txt >> province.txt
+    done
+    ##this if statement checks if the txt file contains data and if so, uses sed to add headings before outputting to user
+    ##additionally, sed is used to check for the number of entries for the province in question.
+    if [ -s province.txt ] ; then
+        sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' province.txt | column -t -s ","
+        repnum=$(sed -n '$=' province.txt)
+        spacing
+        echo "${INVERTED}${GREEN}There are a total of $repnum sales representatives in this province.${NC}"
+        rm province.txt
+    ##otherwise (meaning the txt file has no data) user is informed that there are no reps in this area.
+    else
+        echo "${BOLD}${RED}There are currently no sales reps operating in this province on record.${NC}"
+    fi
 }
 
-##function that will be called upon choice of a specific province.
+##function that will be called upon choice of a specific instrument type.
 display_specialist_results() {
-    ##if the passed variable is x province then a for loop iterates through the appropriate array
-    ##this array then uses grep command to search the records file for whole words, case insensensitive matches
-    ##The array-matched results are then placed inside a new text file.
-
-        grep -i -w -F "$1" records.txt >> instruments.txt
-        ##this if statement checks if the txt file contains data and if so, uses sed to add headings before outputting to user
-        ##additionally, sed is used to check for the number of entries for the province in question.
-        if [ -s instruments.txt ] ; then
-            sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' instruments.txt | column -t -s ","
-            repnum=$(sed -n '$=' instruments.txt)
-            spacing
-            echo "There are a total of $repnum sales representatives specialising in $1 "
-            rm instruments.txt
-        ##otherwise (meaning the txt file has no data) user is informed that there are no reps in this area.
-        else
-            echo "There are currently no $1 specialists on record "
-        fi
+    ##this function follows a similar logic to display_province_results but it does not take in an array but a single user-supplied variable.
+    ##it once again uses the creation of a separate text file to provide user-friendly formatting for the output
+    grep -i -w -F "$1" records.txt >> instruments.txt
+    ##this if statement checks if the txt file contains data and if so, uses sed to add headings before outputting to user
+    ##additionally, sed is used to check for the number of reps in the records that specialise in this particular instrument type
+    if [ -s instruments.txt ] ; then
+        sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' instruments.txt | column -t -s ","
+        repnum=$(sed -n '$=' instruments.txt)
+        spacing
+        echo "${INVERTED}${GREEN}There are a total of $repnum sales representatives specialising in $1 instruments.${NC}"
+        rm instruments.txt
+    ##otherwise (meaning the txt file has no data) user is informed that there are no reps who specialise in the instrument type in question.
+    else
+        echo "${BOLD}${RED}There are currently no $1 instrument specialists on record.${NC} "
+    fi
 }
 
 ##This function presents a while loop based case where the user is echoed choices of province or return.
@@ -157,7 +164,7 @@ county_options() {
 while [ $subMenu ] 
 do
     spacing
-    echo "${BOLD}Please select the province you wish to locate sales reps in ${NC}"
+    echo "${INVERTED}Please select the province you wish to locate sales reps in:${NC}"
     echo ""
     echo "1) Munster"
     echo "2) Leinster"
@@ -165,35 +172,33 @@ do
     echo "4) Ulster"
     echo "5) Return to the previous menu"
     read answer
-    ##once user chooses an option the display_province_results function has the answer passed to it in the form of an array of the counties conta.
+    ##once user chooses an option the display_province_results function has the answer passed to it in the form of an array of the counties contained in said province.
+    ##a loading message is echoed before the answer_formatting function is called.
+    ##the province array is then passed into the display_province_results function.
     case $answer in
         1) spacing
-            echo "Loading representatives based in Munster..."
+            echo "${BOLD}${GREEN}Loading representatives based in Munster...${NC}"
             answer_formatting
             display_province_results "${munster[@]}"
-            
             ;;
         2) spacing
-            echo "Loading representatives based in Leinster..."
+            echo "${BOLD}${GREEN}Loading representatives based in Leinster...${NC}"
             answer_formatting
             display_province_results "${leinster[@]}"
-             
             ;;
         3) spacing
-            echo "Loading representatives based in Connacht..."
+            echo "${BOLD}${GREEN}Loading representatives based in Connacht...${NC}"
             answer_formatting
             display_province_results "${connacht[@]}"
-             
             ;;
         4) spacing
-            echo "Loading representatives based in Ulster..."
+            echo "${BOLD}${GREEN}Loading representatives based in Ulster...${NC}"
             answer_formatting
             display_province_results "${ulster[@]}"
-             
             ;;
         5) subMenu=false
             spacing
-            echo "Returning to previous menu..."
+            echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
             spacing
             sleep 1
             clear
@@ -205,11 +210,12 @@ do
 done
 }
 
+##once again this function works similarly to the province version but instead provides a choice of instrumental specialities. 
 speciality_options() {
 while [ $subMenu ] 
 do
     spacing
-    echo "${BOLD}Please select the instrumental specialty you wish to search for ${NC}"
+    echo "${INVERTED}Please select the instrumental specialty you wish to search for: ${NC}"
     echo ""
     echo "1) Piano"
     echo "2) Guitar"
@@ -219,41 +225,42 @@ do
     echo "6) Brass"
     echo "7) Return to the previous menu"
     read answer
-    ##once user chooses an option the display_province_results function has the answer passed to it.
+    ##once user chooses an option the display_specialist_results function has the answer passed to it.
+    ##again, the logic is the same as the prior function re formatting and loading message etc
     case $answer in
         1) spacing
-            echo "Loading reps specialising in Piano..."
+            echo "${BOLD}${GREEN}Loading reps specialising in Piano...${NC}"
             answer_formatting
             display_specialist_results piano
             ;;
         2) spacing
-            echo "Loading reps specialising in Guitar..."
+            echo "${BOLD}${GREEN}Loading reps specialising in Guitar...${NC}"
             answer_formatting
             display_specialist_results guitar 
             ;;
         3) spacing
-            echo "Loading reps specialising in Strings..."
+            echo "${BOLD}${GREEN}Loading reps specialising in Strings...${NC}"
             answer_formatting
             display_specialist_results string
             ;;
         4) spacing
-            echo "Loading reps specialising in Wind..."
+            echo "${BOLD}${GREEN}Loading reps specialising in Wind...${NC}"
             answer_formatting
             display_specialist_results wind
             ;;
         5) spacing
-            echo "Loading reps specialising in Percussion..."
+            echo "${BOLD}${GREEN}Loading reps specialising in Percussion...${NC}"
             answer_formatting
             display_specialist_results percussion
             ;;
         6) spacing
-            echo "Loading reps specialising in Brass..."
+            echo "${BOLD}${GREEN}Loading reps specialising in Brass...${NC}"
             answer_formatting
             display_specialist_results brass
             ;;
         7) subMenu=false
             spacing
-            echo "Returning to previous menu..."
+            echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
             spacing
             sleep 1
             clear
@@ -266,15 +273,15 @@ done
 }
 
 loading
-##outer menu for checking records and other options 
-##PS3='Choose whether you wish to 1) Search by word or number 2) Search by instrument speciality 3) Search by province 4) View all records 5) Return to the previous menu: '
-##options=("Search by word or number" "Search by instrument speciality" "Search by province" "View all records" "Return to the previous menu")
+##outer menu for selecting a search type.
+##in a similar way to the main menu, the users choice is used to lead to a different menu-loop. 
+##in contrast to the main menu these choices lead to functions instead of sub-scripts.
 while [ $mainMenu ]
 do
     spacing
-    echo "${INVERTED}SEARCH MENU${NC}"
+    echo "${INVERTED}${CYAN}S E A R C H - M E N U ${NC}"
     echo ""
-    echo "${BOLD}Please select one of the following options${NC}"
+    echo "${BOLD}Please select one of the following options:${NC}"
     echo ""
     echo "1) Search by word or number"
     echo "2) Search by instrumental speciality"
@@ -300,7 +307,7 @@ do
             ;;
         5)
             spacing
-            echo "Returning to previous menu..."
+            echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
             spacing
             sleep 1
             clear

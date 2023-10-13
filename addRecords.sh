@@ -13,6 +13,7 @@ question=true
 instrumentCheck=false
 confirmation=false
 check=false
+
 ##variables for later use to check for letters or numbers via regular expressions.
 numRestriction="^[0-9]{9}$"
 letterRestriction="^[a-zA-z]+$"
@@ -20,11 +21,14 @@ letterRestriction="^[a-zA-z]+$"
 ##variable used to store the regex that will be used to validate email addresses
 emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
 
+##an array of counties for use in error checking when adding a county.
 counties=("Clare" "Cork" "Kerry" "Limerick" "Tipperary" "Waterford" "Carlow" "Dublin" "Kildare" "Kilkenny" "Laois" "Longford" "Louth" "Meath" "Offaly" "Westmeath" "Wexford" "Wicklow" "Galway" "Leitrim" "Mayo" "Roscommon" "Sligo" "Antrim" "Armagh" "Tyrone" "Derry" "Down" "Donegal" "Fermanagh" "Monaghan" "Cavan")
 
+##variables for use in colour and text formatting
 GREEN=$'\e[32m'
 RED=$'\e[31m'
 YELLOW=$'\e[33m'
+CYAN=$'\e[96m'
 NC=$'\e[0m'
 INVERTED=$'\e[7m'
 UNDERLINED=$'\e[4m'
@@ -40,7 +44,7 @@ spacing() {
 ##function for use in breaking up user experience via brief load and clear.
 loading() {
     spacing
-    echo "Loading..."
+    echo "${CYAN}Loading...${NC}"
     spacing
     sleep 1
     clear
@@ -49,7 +53,7 @@ loading() {
 ##function to echo a message to user notifying them of menu change prior to clear and return.
 exit_menu() {
     spacing
-    echo "returning to the previous menu"
+    echo "${BOLD}${CYAN}returning to the previous menu${NC}"
     spacing
     sleep 1
     clear
@@ -85,6 +89,7 @@ number_check() {
     fi
 }
 
+##function to check that the user has not entered a blank space in the speciality field.
 speciality_check() {
     if [ "$1" = "" ] ; then
         echo "${YELLOW}Invalid entry. Please enter one of the numeric options. ${NC}"
@@ -92,6 +97,11 @@ speciality_check() {
     fi
 }
 
+##function to check the user input matches a county within the county array.
+##two variables are used as switches here to allow the loop to be exited if the input matches a county in the array
+##the second variable is used in the event that the input fails to match anything in the array.
+##the check is then set to false. External to the loop, an if statement is used in conjunction with the check variable
+##if check is false, an error is echoed to the user explaining that the input is invalid.
 county_check() {
     for i in "${counties[@]}"
     do
@@ -110,6 +120,8 @@ county_check() {
     fi
 }
 
+##as throughout these scripts, this function creates a new file, adds the users input to it with comma delimiters as appropriate
+##and then uses sed to supply headings and then outputs to the user using column for formatting before deleting the new file.
 present_entry() {
         echo "$name,$company,$speciality,$city,$county,+353$phone,$email" > searchresult.txt | column -t -s ","
         ##once again the headings variable and sed command are used to present the headings appropriately in new file
@@ -123,7 +135,6 @@ present_entry() {
 ##this function also has a nested if statement within the yes option which uses grep to search the document for a matching entry.
 ##if a matching entry is found the user is informed of this and the loop is broken. Otherwise the entry is added to the txt file.
 yes_or_no() {
-    ##below loop is exited via the n option or the pre-existing details break.
     confirmation=false
     while ! $confirmation; 
     do
@@ -158,8 +169,12 @@ loading
 while $subMenu; 
 do
     spacing
+    echo "${INVERTED}${CYAN}A D D - A - N E W - R E C O R D${NC}"
+    echo ""
     ##user is prompted to enter the record details one at a time or r to return. These are then stored in the appropriate variable.
-    ##the check functions then have these new variables passed into them for error checking as explained above.
+    ##the check functions then have these new variables passed into them for error checking as explained above. 
+    ##the loops ensure that correct information must be entered before progressing through the system.
+    ##the question variable is set back to true before each loop given the check functions set it to false upon success.
     question=true
     while $question; 
     do
@@ -174,6 +189,8 @@ do
     done
     question=true
     instrumentCheck=true
+    ##below is a loop used to ensure that the user cannot enter innapropriate specialities via a case.
+    ##the presented choices are appropriate and error checking is then easily performed.
     while $instrumentCheck; 
     do
         echo "Please select the instrumental specialty of the rep you wish to add "
@@ -216,6 +233,8 @@ do
         number_check $phone
     done
     question=true
+    ##this final check is vital as it is how the remove feature will be implemented
+    ##if the email is anything other than the correct format or the letter r to return, an error message is echoed.
     while $question; 
     do
         read -p "Enter the email address of the rep or enter 'R' to return: " email
