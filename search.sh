@@ -3,7 +3,7 @@
 ##=================================================================================
 ##Author: Patrick O'Connor
 ##Student number: 20040412
-##github: https://github.com/chipspeak
+##github: https://github.com/chipspeak/compSysAssignment1
 ##Description: script to filter through txt file and find specific details via menu
 ##=================================================================================
 
@@ -13,7 +13,6 @@ searchMenu=true
 mainMenu=true
 
 ##arrays for use in the search menus
-provinces=("Munster" "Leinster" "Connacht" "Ulster")
 munster=("Clare" "Cork" "Kerry" "Limerick" "Tipperary" "Waterford")
 leinster=("Carlow" "Dublin" "Kildare" "Kilkenny" "Laois" "Longford" "Louth" "Meath" "Offaly" "Westmeath" "Wexford" "Wicklow")
 connacht=("Galway" "Leitrim" "Mayo" "Roscommon" "Sligo")
@@ -63,7 +62,7 @@ answer_formatting() {
     spacing
 }
 
-##the simples of the functions, this yields a full display of the current record to the user via sed.
+##the simplest of the functions, this yields a full display of the current record to the user via sed.
 ##user is also supplied with a total number of reps via variable created using -n to suppress sed output
 ##and $= to check the final line of the file, thus providing the total number.
 view_all_records() {
@@ -72,16 +71,17 @@ view_all_records() {
     sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' records.txt | column -t -s ","
     repnum=$(sed -n '$=' records.txt)
     spacing
-    echo "There are a total of $repnum sales reps currently on record."
+    echo "${INVERTED}${GREEN} There are a total of $repnum sales reps currently on record. ${NC}"
 }
 
+##broad search where the user can enter any word or number and filter the file via this entry.
 search_by_word() {
 ##loop is set
 while $searchMenu; 
 do
     spacing
-    ##user is prompted to enter the name of choice or r to return. This is then stored in the name variable.
-    read -p "Please enter the word or number you wish to search for or enter 'R' to return: " input
+    ##user is prompted to enter their word or number of choice or r to return. This is then stored in the input variable.
+    read -p "Please enter the word (i.e name, instrument, location etc) that you wish to search for or enter 'R' to return: " input
     while [ "$input" = "" ] ; 
     do
         echo "${YELLOW}Invalid entry. This field cannot be left blank. ${NC}"
@@ -95,9 +95,9 @@ do
         clear
         break
     fi
-    ## search variable uses grep -i -w to check for the name in the txt file case-insensitive
+    ## search variable uses grep -i -w to check for the input variable for appearances in the txt file.
     search=$(grep -i -w -F "$input" records.txt)
-    ##if statement checks if the variable is true i.e the name search returns a true result
+    ##if statement checks if the variable is true i.e the search returns a true result
     if [ "$search" ] ; then
     ## echos a loading message to the user.
         echo "${BOLD}${GREEN}Returning result(s) for $input...${NC}"
@@ -110,7 +110,7 @@ do
         ##the newly created file is then deleted.
         rm searchresult.txt
     elif [ ! "$search" ] && [ "$input" != "r" ] && [ "$input" != "R" ] ; then
-    ## otherwise returns that the name could not be found and the main script returns to the initial 3 options.
+    ## otherwise returns that the search could not be found and the process restarts.
         spacing
         echo "${BOLD}${RED}No results found for your search.${NC}"
     fi
@@ -119,7 +119,7 @@ done
 
 ##function that will be called upon choice of a specific province.
 display_province_results() {
-    ##The elements of the province array are passed into the function before being iterated through via for loop
+    ##The elements of the province array are passed into the function before being iterated through via a for loop
     ##this array then uses the grep command to search the records file for whole-words, case insensensitive matches
     ##The array-matched results are then placed inside a new text file.
     for i in "$@"
@@ -132,17 +132,18 @@ display_province_results() {
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' province.txt | column -t -s ","
         repnum=$(sed -n '$=' province.txt)
         spacing
-        echo "${INVERTED}${GREEN}There are a total of $repnum sales representatives in this province.${NC}"
+        echo "${INVERTED}${GREEN} There are a total of $repnum sales representatives in this province. ${NC}"
         rm province.txt
     ##otherwise (meaning the txt file has no data) user is informed that there are no reps in this area.
     else
-        echo "${BOLD}${RED}There are currently no sales reps operating in this province on record.${NC}"
+        echo "${INVERTED}${RED} There are currently no sales reps operating in this province on record. ${NC}"
+        rm province.txt
     fi
 }
 
 ##function that will be called upon choice of a specific instrument type.
 display_specialist_results() {
-    ##this function follows a similar logic to display_province_results but it does not take in an array but a single user-supplied variable.
+    ##this function follows a similar logic to display_province_results but rather than an array it takes a single user-supplied variable.
     ##it once again uses the creation of a separate text file to provide user-friendly formatting for the output
     grep -i -w -F "$1" records.txt >> instruments.txt
     ##this if statement checks if the txt file contains data and if so, uses sed to add headings before outputting to user
@@ -151,20 +152,21 @@ display_specialist_results() {
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' instruments.txt | column -t -s ","
         repnum=$(sed -n '$=' instruments.txt)
         spacing
-        echo "${INVERTED}${GREEN}There are a total of $repnum sales representatives specialising in $1 instruments.${NC}"
+        echo "${INVERTED}${GREEN} There are a total of $repnum sales representatives specialising in $1 instruments. ${NC}"
         rm instruments.txt
     ##otherwise (meaning the txt file has no data) user is informed that there are no reps who specialise in the instrument type in question.
     else
-        echo "${BOLD}${RED}There are currently no $1 instrument specialists on record.${NC} "
+        echo "${INVERTED}${RED} There are currently no $1 instrument specialists on record. ${NC}"
+        rm instruments.txt
     fi
 }
 
-##This function presents a while loop based case where the user is echoed choices of province or return.
+##This function presents a while loop case where the user is echoed choices of province or return.
 county_options() {
 while [ $subMenu ] 
 do
     spacing
-    echo "${INVERTED}Please select the province you wish to locate sales reps in:${NC}"
+    echo "${INVERTED}${CYAN} Please select the province you wish to locate sales reps in: ${NC}"
     echo ""
     echo "1) Munster"
     echo "2) Leinster"
@@ -215,7 +217,7 @@ speciality_options() {
 while [ $subMenu ] 
 do
     spacing
-    echo "${INVERTED}Please select the instrumental specialty you wish to search for: ${NC}"
+    echo "${INVERTED}${CYAN} Please select the instrumental specialty you wish to search for: ${NC}"
     echo ""
     echo "1) Piano"
     echo "2) Guitar"
@@ -275,15 +277,15 @@ done
 loading
 ##outer menu for selecting a search type.
 ##in a similar way to the main menu, the users choice is used to lead to a different menu-loop. 
-##in contrast to the main menu these choices lead to functions instead of sub-scripts.
+##in contrast to the main menu these choices lead to the  core functions listed above rather than sub-scripts.
 while [ $mainMenu ]
 do
     spacing
-    echo "${INVERTED}${CYAN}S E A R C H - M E N U ${NC}"
+    echo "${INVERTED}${CYAN} S E A R C H - M E N U ${NC}"
     echo ""
     echo "${BOLD}Please select one of the following options:${NC}"
     echo ""
-    echo "1) Search by word or number"
+    echo "1) Search by word"
     echo "2) Search by instrumental speciality"
     echo "3) Search by province"
     echo "4) View all records"

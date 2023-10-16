@@ -3,7 +3,7 @@
 ##=================================================================
 ##Author: Patrick O'Connor
 ##Student number: 20040412
-##github: https://github.com/chipspeak
+##github: https://github.com/chipspeak/compSysAssignment1
 ##Description: script to filter through txt file and remove records
 ##=================================================================
 
@@ -11,10 +11,6 @@
 confirmation=false
 ##variable to be set to true for use in the outer loop of this script
 subMenu=true
-##variable set to false for use in menu choice
-choice=false
-##variable used to store the headings that will be presented with the txt file
-headings="NAME,COMPANY,SPECIALITY,CITY,COUNTY,PHONE,EMAIL"
 ##variable used to store the regex that will be used to validate email addresses
 emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
 
@@ -38,7 +34,7 @@ spacing() {
 ##function for use in breaking up user experience via brief load and clear.
 loading() {
     spacing
-    echo -e "${BOLD}${CYAN}Loading...${NC}"
+    echo "${BOLD}${CYAN}Loading...${NC}"
     spacing
     sleep 1
     clear
@@ -66,10 +62,10 @@ exit_option() {
 ##function which uses a while loop to check if the user wants to delete the results of the search.
 yes_or_no() {
 confirmation=false
-##while the confirmation variable is false (which it is by default) which prompts the user a y or n option.
+##while the confirmation variable is false (which it is by default) prompts the user a y or n option.
 ##this option, if affirmed, uses the passed argument and sed to delete the search result from the txt file.
 ##a success message is echoed to the user and then the loop is broken when confirmation is declared true
-##otherwise, is the user chooses n, the screen is cleared and the loop is broken. 
+##otherwise, if the user chooses n, the screen is cleared and the loop is broken. 
 ##error checking is also in place to ensure that all answers that are not y or n return an error message.
 while ! $confirmation; 
 do
@@ -105,9 +101,9 @@ loading
 while $subMenu; 
 do
     spacing
-    echo "${INVERTED}${CYAN}R E M O V E - A - R E C O R D${NC}"
+    echo "${INVERTED}${CYAN} R E M O V E - A - R E C O R D ${NC}"
     echo ""
-    ##sed command is used to add the headings variable to the output of the txt file. This is piped into column for formatting via comma delimiter.
+    ##sed command is used to add the headings to the output of the txt file. This is piped into column for formatting via comma delimiter.
     sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' records.txt | column -t -s ","
     spacing
     ##user is prompted to enter the details they wish to search for or r to return. This is then stored in the input variable.
@@ -124,12 +120,12 @@ do
         spacing
         ##grep is used to place the result in a new txt file for formatting with headings and columns
         grep -i -w -F "$input" records.txt >> searchresult.txt | column -t -s ","
-        ##once again the headings variable and sed command are used to present the headings appropriately in new file
+        ##once sed command is used to present the headings appropriately in new file
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
         ##as we've used grep to visually output the contents of the new file, it is subsequently deleted
         rm searchresult.txt
         spacing
-        ##user is then asked if they wish to delete the found records vis the yes or no function
+        ##user is then asked if they wish to delete the found records via the yes or no function
         yes_or_no $input
     fi
 done

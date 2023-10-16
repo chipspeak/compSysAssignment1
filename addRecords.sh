@@ -3,11 +3,11 @@
 ##========================================================
 ##Author: Patrick O'Connor
 ##Student number: 20040412
-##github: https://github.com/chipspeak
+##github: https://github.com/chipspeak/compSysAssignment1
 ##Description: script to add to new information to records
 ##========================================================
 
-##variables to be set to true for use in while loops.
+##variables for use in while loops.
 subMenu=true
 question=true
 instrumentCheck=false
@@ -60,7 +60,7 @@ exit_menu() {
     exit
 }
 
-##function which takes in a read variable and checks for return option, regex letter check and blank space check.
+##function which takes in a user input as a variable and checks for return option, regex letter check and blank space check.
 detail_check() {
     if [ "$1" = "r" ] || [ "$1" = "R" ] ; then
         exit_menu
@@ -70,7 +70,7 @@ detail_check() {
     fi
 }
 
-##function for use with email field to check that it does not contain no value.
+##function for use with final stage of email input. It checks that the input is appropriate via regex before returning a 0 for success or 1 for failure for use in the final check.
 email_check() {
     if [[ $1 =~ $emailRestriction ]]; then
         return 0 
@@ -89,10 +89,12 @@ number_check() {
     fi
 }
 
-##function to check that the user has not entered a blank space in the speciality field.
+##function to check that the user has not entered an inappropriate value or blank space in the speciality field.
 speciality_check() {
     if [ "$1" = "" ] ; then
-        echo "${YELLOW}Invalid entry. Please enter one of the numeric options. ${NC}"
+        echo "${YELLOW}Invalid entry. Please enter one of the numeric options provided. ${NC}"
+    elif [ "$1" = "R" ] || [ "$1" = "r" ] ; then
+    exit_menu
     else instrumentCheck=false
     fi
 }
@@ -124,7 +126,7 @@ county_check() {
 ##and then uses sed to supply headings and then outputs to the user using column for formatting before deleting the new file.
 present_entry() {
         echo "$name,$company,$speciality,$city,$county,+353$phone,$email" > searchresult.txt | column -t -s ","
-        ##once again the headings variable and sed command are used to present the headings appropriately in new file
+        ##once again the sed command are used to present the headings appropriately in new file
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
         ##as we've used grep to visually output the contents of the new file, it is subsequently deleted
         rm searchresult.txt
@@ -138,7 +140,7 @@ yes_or_no() {
     confirmation=false
     while ! $confirmation; 
     do
-        read -p "Is the above information correct(${GREEN}Y${NC}/${RED}N$NC})? " answer
+        read -p "Is the above information correct(${GREEN}${BOLD}Y${NC}/${RED}${BOLD}N${NC})? " answer
         if [ $answer = "Y" ] || [ $answer = "y" ] ; then
             spacing
             check=$(grep -i -w -F "$name,$company,$speciality,$city,$county,+353$phone,$email" records.txt)
@@ -169,10 +171,10 @@ loading
 while $subMenu; 
 do
     spacing
-    echo "${INVERTED}${CYAN}A D D - A - N E W - R E C O R D${NC}"
+    echo "${INVERTED}${CYAN} A D D - A - N E W - R E C O R D ${NC}"
     echo ""
-    ##user is prompted to enter the record details one at a time or r to return. These are then stored in the appropriate variable.
-    ##the check functions then have these new variables passed into them for error checking as explained above. 
+    ##user is prompted to enter the record details one at a time or r to return. These are then stored in the appropriate variables.
+    ##then the check functions have these new variables passed into them for error checking as explained above. 
     ##the loops ensure that correct information must be entered before progressing through the system.
     ##the question variable is set back to true before each loop given the check functions set it to false upon success.
     question=true
@@ -210,7 +212,7 @@ do
             5) speciality="Percussion";;
             6) speciality="Brass";;
             7) speciality="R";;
-            *) 
+            *) speciality=""
         esac
         speciality_check $speciality
     done
@@ -238,11 +240,14 @@ do
     while $question; 
     do
         read -p "Enter the email address of the rep or enter 'R' to return: " email
+        ##passes the user input to the email_check for function for regex comparison. If a 0 is returned (success) loop is exited.
         if email_check "$email" ; then
         question=false
+        ##letter r input is also accounted for lest the user wish to return to the previous menu.
         elif [ "$email" = "r" ] || [ "$email" = "R" ] ; then
             exit_menu
-        else echo "${YELLOW}Please enter a valid email in the format of example@example.example${NC}"
+        ##otherwise an error message is echoed to the user prompting them to use the correct email format
+        else echo "${YELLOW}Please enter a valid email in the format of example@example.com${NC}"
         fi
     done
     spacing
