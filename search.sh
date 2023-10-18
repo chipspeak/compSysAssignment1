@@ -7,6 +7,12 @@
 ##Description: script to filter through txt file and find specific details via menu
 ##=================================================================================
 
+
+##==========================================================================================================================================================
+##VARIABLES
+##==========================================================================================================================================================
+
+
 ##variables for use within menu loops
 subMenu=true
 searchMenu=true
@@ -28,6 +34,12 @@ INVERTED=$'\e[7m'
 UNDERLINED=$'\e[4m'
 BOLD=$'\e[1m'
 
+
+##==========================================================================================================================================================
+##FUNCTIONS
+##==========================================================================================================================================================
+
+
 ##function using tput command in addition to columns to substitude equals sign into character width of screen
 spacing() {
     echo " "
@@ -44,14 +56,13 @@ loading() {
     clear
 }
 
-##function to echo a message to user notifying them of menu change prior to clear and return.
-exit_menu() {
+##function similar to loading but for returning to previous menus
+returning() {
     spacing
-    echo "${BOLD}${CYAN}returning to the previous menu${NC}"
+    echo "${BOLD}${CYAN}Returning to the previous menu...${NC}"
     spacing
     sleep 1
     clear
-    exit
 }
 
 ##function for use in formatting the submenu results.
@@ -60,6 +71,17 @@ answer_formatting() {
     sleep 1
     clear
     spacing
+}
+
+##function which uses the same concept as the welcome menu but in the context of displaying an error message
+##for use in conjunction with menu options
+display_error() {
+    clear
+    spacing
+    echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
+    spacing
+    read -n 1 -s -r -p "${BOLD}${CYAN}Press any key to try again ${NC}" ans
+    clear
 }
 
 ##the simplest of the functions, this yields a full display of the current record to the user via sed.
@@ -88,11 +110,7 @@ do
         read -p "Please enter the word or number you wish to search for or enter 'R' to return: " input
     done
     if [ $input = "r" ] || [ $input = "R" ] ; then
-        spacing
-        echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
-        spacing
-        sleep 1
-        clear
+        returning
         break
     fi
     ## search variable uses grep -i -w to check for the input variable for appearances in the txt file.
@@ -162,7 +180,7 @@ display_specialist_results() {
 }
 
 ##This function presents a while loop case where the user is echoed choices of province or return.
-county_options() {
+province_options() {
 while [ $subMenu ] 
 do
     spacing
@@ -199,15 +217,11 @@ do
             display_province_results "${ulster[@]}"
             ;;
         5) subMenu=false
-            spacing
-            echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
-            spacing
-            sleep 1
-            clear
+            returning
             break 
             ;;
-        *)  spacing
-            echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
+        *)  display_error
+            ;;
     esac
 done
 }
@@ -261,18 +275,20 @@ do
             display_specialist_results brass
             ;;
         7) subMenu=false
-            spacing
-            echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
-            spacing
-            sleep 1
-            clear
+            returning
             break 
             ;;
-        *)  spacing
-            echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
+        *)  display_error
+            ;;
     esac
 done
 }
+
+
+##==========================================================================================================================================================
+##MAIN PROGRAMME
+##==========================================================================================================================================================
+
 
 loading
 ##outer menu for selecting a search type.
@@ -295,28 +311,19 @@ do
         1)  loading
             search_by_word
             ;;
-        2)
-            loading
+        2)  loading
             speciality_options
             ;;
-        3)
-            loading
-            county_options
+        3)  loading
+            province_options
             ;;
-        4)
-            loading
+        4)  loading
             view_all_records
             ;;
-        5)
-            spacing
-            echo "${BOLD}${CYAN}Returning to previous menu...${NC}"
-            spacing
-            sleep 1
-            clear
+        5)  returning
             break
             ;;
-        *)  spacing
-            echo "${YELLOW}Invalid option. Please select one of supplied numbers. ${NC}"
+        *)  display_error
             ;;
     esac
 done

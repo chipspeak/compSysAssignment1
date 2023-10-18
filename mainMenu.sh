@@ -10,6 +10,7 @@
 ##colour and text formatting variables
 YELLOW=$'\e[33m'
 CYAN=$'\e[96m'
+RED=$'\e[31m'
 INVERTED=$'\e[7m'
 BOLD=$'\e[1m'
 NC=$'\e[0m'
@@ -51,6 +52,17 @@ spacing() {
     echo " "
 }
 
+##function which uses the same concept as the welcome menu but in the context of displaying an error message
+##for use in conjunction with menu options
+display_error() {
+    clear
+    spacing
+    echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
+    spacing
+    read -n 1 -s -r -p "${BOLD}${CYAN}Press any key to try again ${NC}" ans
+    clear
+}
+
 ##welcome greeting is display upon initial startup
 welcome_greeting
 echo ""
@@ -78,8 +90,20 @@ do
     read answer
     case $answer in 
         1) ./addRecords.sh ;;
-        2) ./remove.sh ;;
-        3) ./search.sh ;;
+        2) if [ -s records.txt ] ; then
+           ./remove.sh 
+           else clear
+                spacing
+                echo "${BOLD}${RED}Records file is empty. Please add a record before attempting to remove ${NC}"
+           fi
+           ;;
+        3) if [ -s records.txt ] ; then
+           ./search.sh 
+           else clear
+                spacing
+                echo "${BOLD}${RED}Records file is empty. Please add a record before attempting to search ${NC}"
+           fi
+           ;;
         4)  spacing
             echo "${BOLD}${CYAN}Exiting programme...${NC}"
             spacing
@@ -87,8 +111,7 @@ do
             clear
             break
             ;;
-        *)  spacing
-            echo "${YELLOW}Invalid option. Please enter one of the supplied numbers. ${NC}"
+        *)  display_error
             ;;
     esac
 done
