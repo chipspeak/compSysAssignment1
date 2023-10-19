@@ -28,7 +28,7 @@ letterRestriction="^[a-zA-z]+$"
 emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
 
 ##an array of counties for use in error checking when adding a county.
-counties=("Clare" "Cork" "Kerry" "Limerick" "Tipperary" "Waterford" "Carlow" "Dublin" "Kildare" "Kilkenny" "Laois" "Longford" "Louth" "Meath" "Offaly" "Westmeath" "Wexford" "Wicklow" "Galway" "Leitrim" "Mayo" "Roscommon" "Sligo" "Antrim" "Armagh" "Tyrone" "Derry" "Down" "Donegal" "Fermanagh" "Monaghan" "Cavan")
+counties=("clare" "cork" "kerry" "limerick" "tipperary" "waterford" "carlow" "dublin" "kildare" "kilkenny" "laois" "longford" "louth" "meath" "offaly" "westmeath" "wexford" "wicklow" "galway" "leitrim" "mayo" "roscommon" "sligo" "antrim" "armagh" "tyrone" "derry" "down" "donegal" "fermanagh" "monaghan" "cavan")
 
 ##variables for use in colour and text formatting
 GREEN=$'\e[32m'
@@ -82,7 +82,8 @@ detail_check() {
     fi
 }
 
-##function for use with final stage of email input. It checks that the input is appropriate via regex before returning a 0 for success or 1 for failure for use in the final check.
+##function for use with final stage of email input. It checks that the input is appropriate via regex before returning
+##a 0 for success or 1 for failure for use in the final check.
 email_check() {
     if [[ $1 =~ $emailRestriction ]]; then
         return 0 
@@ -119,7 +120,7 @@ speciality_check() {
 county_check() {
     for i in "${counties[@]}"
     do
-        if [ "$1" = "$i" ] ; then
+        if [ "${1,,}" = "$i" ] ; then ##using a comma as part of the parameter containing the passed in variable to ensure case match to array
             check=true
             question=false
             break
@@ -144,7 +145,6 @@ present_entry() {
         rm searchresult.txt
 }
 
-
 ##function for use in confirming entered information. The user has had the details echoed back. A y or n option is then given to them
 ##this function also has a nested if statement within the yes option which uses grep to search the document for a matching entry.
 ##if a matching entry is found the user is informed of this and the loop is broken. Otherwise the entry is added to the txt file.
@@ -164,13 +164,13 @@ yes_or_no() {
             fi
             echo "Adding details to records..."
             sleep 1
-            echo "${GREEN}Details added${NC}"
+            echo "${GREEN}${BOLD}Details added${NC}"
             sleep 2
             clear
             confirmation=true
         elif [ $answer = "N" ] || [ $answer = "n" ] ; then
             echo "Restarting entry process..."
-            sleep 1
+            sleep 2
             clear
             confirmation=true
         else echo "${YELLOW}Invalid input. Please answer'Y' or 'N' ${NC}"

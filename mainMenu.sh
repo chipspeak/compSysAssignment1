@@ -7,6 +7,12 @@
 ##Description: main menu script for programme
 ##=======================================================
 
+
+##==========================================================================================================================================================
+##VARIABLES
+##==========================================================================================================================================================
+
+
 ##colour and text formatting variables
 YELLOW=$'\e[33m'
 CYAN=$'\e[96m'
@@ -17,6 +23,12 @@ NC=$'\e[0m'
 
 ##variable for use in the menu loop
 subMenu=true
+
+
+##==========================================================================================================================================================
+##FUNCTIONS
+##==========================================================================================================================================================
+
 
 ##function to display a welcome greeting container author info etc
 ##this method ends with a user prompt where -n 1 is used to ensure it takes a single character input, 
@@ -63,6 +75,12 @@ display_error() {
     clear
 }
 
+
+##==========================================================================================================================================================
+##MAIN PROGRAMME
+##==========================================================================================================================================================
+
+
 ##welcome greeting is display upon initial startup
 welcome_greeting
 echo ""
@@ -74,8 +92,9 @@ sleep 1
 echo -ne "...${NC}"
 sleep 1
 clear
-##main menu while loop where the user is presented their menu choices. A case is then used to direct to the appropriate subscript as needed based on response.
-##as with all cases in this script and its subscripts, wildcard * is used for all answers that are not listed choices and an appropriate error message is displayed.
+##main menu while loop where the user is presented their menu choices. A case is then used to direct to the appropriate subscript.
+##as with all cases in this script and its subscripts, wildcard * is used for all answers that are not listed choices 
+##and an appropriate error message is displayed.
 while [ $subMenu ]
 spacing
 echo "${INVERTED}${CYAN} M A I N - M E N U ${NC}"
@@ -107,7 +126,7 @@ do
         4)  spacing
             echo "${BOLD}${CYAN}Exiting programme...${NC}"
             spacing
-            sleep 1
+            sleep 3
             clear
             break
             ;;

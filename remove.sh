@@ -19,13 +19,10 @@ confirmation=false
 subMenu=true
 ##variable for use within inner menu loops
 removeMenu=true
-
-countyMenu=true
-
-check=false
+##variable for use in speciality choice menu
+speciality=""
 ##variable used to store the regex that will be used to validate email addresses
 emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
-
 ##colour and text formatting variables
 GREEN=$'\e[32m'
 RED=$'\e[31m'
@@ -103,7 +100,7 @@ remove_by_county() {
         elif [ "$county" = "" ] ; then
             echo "${YELLOW}This field cannot be left blank. Please enter again. ${NC}"
         fi
-        done
+    done
 }
 
 ##function which allows the user to remove a single record via email
@@ -117,6 +114,7 @@ remove_single_record() {
         spacing
         ##user is prompted to enter the details they wish to search for or r to return. This is then stored in the input variable.
         read -p "Please enter the ${UNDERLINED}email address${NC} of the rep you wish to remove or enter 'R' to return: " input
+        ##if variable is r returning function is called and loop is broken
         if [ "$input" = "r" ] || [ "$input" = "R" ] ; then
             returning
             break
@@ -127,16 +125,18 @@ remove_single_record() {
             grep -i -w -F "$input" records.txt >> searchresult.txt | column -t -s ","
             ##once sed command is used to present the headings appropriately in new file
             sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
+            ##variable using wc -l to check line numbers of the new file and used to present user with number of potentially deleted records
+            removeNum=$(cat searchresult.txt | wc -l)
             ##as we've used grep to visually output the contents of the new file, it is subsequently deleted
             rm searchresult.txt
             spacing
             ##user is then asked if they wish to delete the found records via the yes or no function
-            yes_or_no $input
-        else clear 
+            yes_or_no $input $removeNum
+        else clear
             spacing
-            echo "${YELLOW}Invalid entry. Please enter one of the above email addresses. ${NC}"
+            echo "${YELLOW}Invalid entry. Please enter one of the displayed email addresses ${NC}"
             spacing
-            sleep 3 
+            read -n 1 -s -r -p "${BOLD}${CYAN}Press any key to display the list and try again ${NC}" ans
             clear
         fi
     done
@@ -149,7 +149,6 @@ remove_multiple_records() {
     spacing
     sleep 1
     clear
-    ##if statement checks if the function is returning a true (i.e 0) when using a regex check on the input email and then executes the following commands.
     search=$(grep -i -w -F "$1" records.txt)
     if [ "$search" ] ; then
         spacing
@@ -157,6 +156,7 @@ remove_multiple_records() {
         grep -i -w -F "$1" records.txt >> searchresult.txt | column -t -s ","
         ##once sed command is used to present the headings appropriately in new file
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
+        ##variable using wc -l to check line numbers of the new file and used to present user with number of potentially deleted records
         removeNum=$(cat searchresult.txt | wc -l)
         ##as we've used grep to visually output the contents of the new file, it is subsequently deleted
         rm searchresult.txt
