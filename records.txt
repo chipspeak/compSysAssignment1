@@ -1,12 +1,12 @@
-Liam O'Connor,Celtic Harps,String,Dublin,Dublin,+353122345678,liamoconnor@celticharps.ie
-Aoife Murphy,Bodhran Crafters,Percussion,Galway,Galway,+353918765432,aoifemurphy@bodhrancrafters.com
-Sean Kelly,Emerald Guitars,Guitar,Tipperary,Tipperary,+353280123456,seankelly@emeraldguitars.com
-Siobhan Doyle,Fiddleworks,String,Cork,Cork,+353219876541,siobhandoyle@fiddleworks.ie
-Declan Byrne,Shamrock Pianos,Piano,Limerick,Limerick,+353612345648,declanbyrne@shamrockpianos.com
-Niamh Kennedy,The Tin Shop,Wind,Waterford,Waterford,+353518765430,niamhkennedy@thetinshop.ie
-Ciaran Walsh,Celtic Drums,Percussion,Athlone,Westmeath,+353871234567,ciaranwalsh@celticdrums.com
-Aoibhinn Ryan,FluteCraft Ireland,Wind,Killarney,Kerry,+353643210987,aoibhinnryan@flutecraft.ie
-Padraig Gallagher,Harp Haven,String,Kilkenny,Kilkenny,+353567890123,padraiggallagher@harphaven.ie
+Liam O'Connor,Celtic Harps,String,Dublin,Dublin,+353122345678,liam.oconnor@celticharps.ie
+Aoife Murphy,Bodhran Crafters,Percussion,Galway,Galway,+353918765432,aoife.murphy@bodhrancrafters.com
+Sean Kelly,Emerald Guitars,Guitar,Tipperary,Tipperary,+353280123456,sean.kelly@emeraldguitars.com
+Siobhan Doyle,Fiddleworks,String,Cork,Cork,+353219876541,siobhan.doyle@fiddleworks.ie
+Declan Byrne,Shamrock Pianos,Piano,Limerick,Limerick,+353612345648,declan.byrne@shamrockpianos.com
+Niamh Kennedy,The Tin Shop,Wind,Waterford,Waterford,+353518765430,niamh.kennedy@thetinshop.ie
+Ciaran Walsh,Celtic Drums,Percussion,Athlone,Westmeath,+353871234567,ciaran.walsh@celticdrums.com
+Aoibhinn Ryan,FluteCraft Ireland,Wind,Killarney,Kerry,+353643210987,aoibhinn.ryan@flutecraft.ie
+Padraig Gallagher,Harp Haven,String,Kilkenny,Kilkenny,+353567890123,padraig.gallagher@harphaven.ie
 Eilis Murphy,Yamaha,Piano,Dublin,Dublin,+353482345678,eilis@yamaha.ie
 Colm O'Neill,Fender,Guitar,Dublin,Dublin,+353189585506,colmoneill@fender.ie
 Saoirse Quinn,Kawaii,Piano,Cork,Cork,+353229866543,saoirseq@kawaii.ie
@@ -17,4 +17,5 @@ Finbar Murphy,Fiddle Fantasia,String,Clonmel,Tipperary,+353898715032,finbar.murp
 Aoibheann O'Donnell,Carrick Clarinets,Wind,Carrick,Tipperary,+353297134564,aoibheannod@carrickclarinets.ie
 Caoimhe Wallace,Martin,Guitar,Maynooth,Kildare,+353112234677,caoimhe@martin.ie
 John Palmer,JP Music,Guitar,Waterford,Waterford,+353123456789,john@jpmusic.ie
-James O Donovan,JOD Sax,Wind,Clonmel,Tipperary,+353123321123,james@jodsax.ie
+Pat O Connor,PW Keys,Piano,Maynooth,Kildare,+353147741258,pat@pwkeys.ie
+James O Donovan,JOD Sax,Wind,Clonmel,Tipperary,+353963258741,james@jodsax.ie

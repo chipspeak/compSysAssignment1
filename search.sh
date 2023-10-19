@@ -19,10 +19,10 @@ searchMenu=true
 mainMenu=true
 
 ##arrays for use in the search menus
-munster=("Clare" "Cork" "Kerry" "Limerick" "Tipperary" "Waterford")
-leinster=("Carlow" "Dublin" "Kildare" "Kilkenny" "Laois" "Longford" "Louth" "Meath" "Offaly" "Westmeath" "Wexford" "Wicklow")
-connacht=("Galway" "Leitrim" "Mayo" "Roscommon" "Sligo")
-ulster=("Antrim" "Armagh" "Tyrone" "Derry" "Down" "Donegal" "Fermanagh" "Monaghan" "Cavan")
+munster=("clare" "cork" "Kerry" "limerick" "tipperary" "waterford")
+leinster=("carlow" "dublin" "kildare" "kilkenny" "laois" "longford" "louth" "meath" "offaly" "westmeath" "wexford" "wicklow")
+connacht=("galway" "leitrim" "mayo" "roscommon" "sligo")
+ulster=("antrim" "armagh" "tyrone" "derry" "down" "donegal" "fermanagh" "monaghan" "cavan")
 
 ##variables for use in colour and text formatting
 GREEN=$'\e[32m'
