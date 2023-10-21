@@ -4,6 +4,7 @@
 ##Author: Patrick O'Connor
 ##Student number: 20040412
 ##github: https://github.com/chipspeak/compSysAssignment1
+##video walkthrough: https://youtu.be/MECO79392ys                                    
 ##Description: script to add to new information to records
 ##========================================================
 
@@ -22,7 +23,7 @@ check=false
 
 ##variables for later use to check for letters or numbers via regular expressions.
 numRestriction="^[0-9]{9}$"
-letterRestriction="^[[:alpha:]]+$"
+##letterRestriction="^[[:alpha:]]+$"
 
 ##variable used to store the regex that will be used to validate email addresses
 emailRestriction='^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$'
@@ -72,11 +73,11 @@ exit_menu() {
     exit
 }
 
-##function which takes in a user input as a variable and checks for return option, regex letter check and blank space check.
+##function which takes in a user input as a variable and checks for return option, regex check and blank space check.
 detail_check() {
     if [ "$1" = "r" ] || [ "$1" = "R" ] ; then
         exit_menu
-    elif [ "$1" != "" ] && [[ $1 =~ $letterRestriction ]] ; then
+    elif [ "$1" != "" ] && [[ ! $1 =~ [0-9] ]] ; then
         question=false
     else echo "${YELLOW}This field cannot contain numbers, symbols or be left blank. Please enter only letters${NC}"
     fi
@@ -141,7 +142,7 @@ present_entry() {
         echo "$name,$company,$speciality,$city,$county,+353$phone,$email" > searchresult.txt | column -t -s ","
         ##once again the sed command are used to present the headings appropriately in new file
         sed '1 i\NAME,COMPANY,SPECIALTY,CITY,COUNTY,PHONE,EMAIL' searchresult.txt | column -t -s ","
-        ##as we've used grep to visually output the contents of the new file, it is subsequently deleted
+        ##as we've visually outputed the contents of the new file, it is subsequently deleted
         rm searchresult.txt
 }
 

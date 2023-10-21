@@ -17,5 +17,5 @@ Finbar Murphy,Fiddle Fantasia,String,Clonmel,Tipperary,+353898715032,finbar.murp
 Aoibheann O'Donnell,Carrick Clarinets,Wind,Carrick,Tipperary,+353297134564,aoibheannod@carrickclarinets.ie
 Caoimhe Wallace,Martin,Guitar,Maynooth,Kildare,+353112234677,caoimhe@martin.ie
 John Palmer,JP Music,Guitar,Waterford,Waterford,+353123456789,john@jpmusic.ie
-Pat O Connor,PW Keys,Piano,Maynooth,Kildare,+353147741258,pat@pwkeys.ie
-James O Donovan,JOD Sax,Wind,Clonmel,Tipperary,+353963258741,james@jodsax.ie
+James O Donovan,JOD Sax,Wind,Clonmel,Tipperary,+353147741471,james@jodsax.ie
+Pat O Connor,PW Keys,Piano,Maynooth,Kildare,+353258852258,pat@pwkeys.ie

@@ -4,6 +4,7 @@
 ##Author: Patrick O'Connor
 ##Student number: 20040412
 ##github: https://github.com/chipspeak/compSysAssignment1
+##video walkthrough: https://youtu.be/MECO79392ys   
 ##Description: script to filter through txt file and remove records
 ##=================================================================
 
